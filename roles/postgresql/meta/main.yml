@@ -1,0 +1,16 @@
+# author: sestegra
+# description: PostgreSQL server
+# license: "MIT"
+# min_ansible_version: 2.7
+# platforms:
+#   - name: EL
+#     versions:
+#       - 6
+#       - 7
+
+# Documentation
+# Download:          https://www.postgresql.org/download/linux/redhat/
+# Versioning Policy: https://www.postgresql.org/support/versioning/
+# Release Notes:     https://www.postgresql.org/docs/10/release.html
+#                    https://www.postgresql.org/docs/11/release.html
+---

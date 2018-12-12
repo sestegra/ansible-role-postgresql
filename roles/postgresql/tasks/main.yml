@@ -1,0 +1,51 @@
+---
+- name: Install PostgreSQL repository
+  yum:
+    name: "{{ postgresql_repos }}"
+    state: present
+
+- name: Install PostgreSQL packages
+  yum:
+    name: "{{ postgresql_packages }}"
+    state: latest
+  notify: Restart PostgreSQL service
+
+- name: Check PostgreSQL initialisation
+  stat:
+    path: "{{ postgresql_data_dir }}/PG_VERSION"
+  register: pg_version
+
+- name: Initialise PostgreSQL (init)
+  command: "service postgresql-{{ postgresql_release }} initdb"
+  when: not pg_version.stat.exists and ansible_distribution_major_version == '6' 
+  # 'service' module can't be used in that case
+  args:
+    warn: false
+
+- name: Initialise PostgreSQL (systemd)
+  command: "/usr/pgsql-{{ postgresql_release }}/bin/postgresql-{{ postgresql_release }}-setup initdb"
+  when: not pg_version.stat.exists and ansible_distribution_major_version > '6' 
+
+- name: Enable and start PostgreSQL service
+  service:
+    name: "{{ postgresql_service }}"
+    state: started
+    enabled: true
+
+- name: Create PostgreSQL databases
+  become_user: "{{ postgresql_user }}"
+  postgresql_db:
+    name: "{{ item.name }}"
+    state: present
+  with_items: "{{ postgresql_dbs }}"
+
+- name: Create PostgreSQL users
+  become_user: "{{ postgresql_user }}"
+  postgresql_user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    db: "{{ item.db | default(omit) }}"
+    priv: "{{ item.priv | default(omit) }}"
+    role_attr_flags: "{{ item.role_attr_flags | default(omit) }}"
+    state: present
+  with_items: "{{ postgresql_users }}"

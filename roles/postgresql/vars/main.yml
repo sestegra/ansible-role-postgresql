@@ -1,0 +1,23 @@
+---
+# CentOS system specific variables
+postgresql_repos: https://download.postgresql.org/pub/repos/yum/{{ postgresql_release }}/redhat/rhel-{{ ansible_distribution_major_version }}-x86_64/pgdg-centos{{ postgresql_release }}-{{ postgresql_release }}-2.noarch.rpm
+postgresql_packages:
+  - postgresql{{ postgresql_release }}-server
+  - python-psycopg2
+postgresql_service: postgresql-{{ postgresql_release }}
+postgresql_user: postgres
+postgresql_data_dir: /var/lib/pgsql/{{ postgresql_release }}/data/
+
+# See https://docs.ansible.com/ansible/latest/modules/postgresql_db_module.html
+# postgresql_dbs:
+#   - name:  Name of the database (Required)
+postgresql_dbs: []
+
+# See https://docs.ansible.com/ansible/latest/modules/postgresql_user_module.html
+# postgresql_users:
+#   - name:             Name of the user (role) (Required)
+#     password:         Set the user's password (Required)
+#     db:               Name of database where permissions will be granted
+#     priv:             PostgreSQL privileges string in the format: table:priv1,priv2.
+#     role_attr_flags:  PostgreSQL role attributes string in the format: CREATEDB,CREATEROLE,SUPERUSER
+postgresql_users: []

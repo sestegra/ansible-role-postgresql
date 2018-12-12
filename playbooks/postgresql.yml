@@ -1,0 +1,13 @@
+---
+- hosts: db
+  become: true
+  roles:
+    - role: geerlingguy.repo-epel
+    - role: postgresql
+#      postgresql_release: "11"
+      postgresql_dbs:
+        - name: test
+      postgresql_users:
+        - name: test
+          password: test
+          db: test
